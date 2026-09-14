@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uji Diagnostik Sistem</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        /* Container umum */
+        .screen-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        /* 1. LAYAR JEBAKAN (BAIT SCREEN) */
+        #baitScreen {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            z-index: 10;
+        }
+
+        .bait-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 40px 30px;
+            border-radius: 16px;
+            max-width: 440px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .bait-icon {
+            font-size: 50px;
+            margin-bottom: 16px;
+        }
+
+        .bait-title {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .bait-desc {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            width: 100%;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        }
+
+        /* 2. LAYAR KUNCI PRANK (LOCK SCREEN) */
+        #lockScreen {
+            background: #b91c1c;
+            color: white;
+            z-index: 20;
+            display: none;
+            touch-action: none;
+            animation: pulseBg 1.5s infinite alternate;
+        }
+
+        @keyframes pulseBg {
+            0% { background-color: #991b1b; }
+            100% { background-color: #dc2626; }
+        }
+
+        .lock-warning-icon {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .lock-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .lock-subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-box {
+            background: rgba(0, 0, 0, 0.45);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            padding: 18px 32px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            min-width: 280px;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.85;
+            margin-bottom: 6px;
+        }
+
+        .timer-count {
+            font-size: 2.6rem;
+            font-weight: 800;
+            font-family: monospace;
+            color: #fef08a;
+            text-shadow: 0 0 10px rgba(254, 240, 138, 0.5);
+        }
+
+        .progress-bar-wrap {
+            width: 80%;
+            max-width: 320px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: #fef08a;
+            transition: width 1s linear;
+        }
+
+        .academic-badge {
+            font-size: 0.78rem;
+            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 6px 14px;
+            border-radius: 20px;
+            max-width: 90%;
+        }
+
+        /* 3. LAYAR PENGUNGKAPAN (REVEAL SCREEN) */
+        #revealScreen {
+            background: radial-gradient(circle at center, #065f46 0%, #064e3b 100%);
+            color: #ecfdf5;
+            z-index: 30;
+            display: none;
+        }
+
+        .reveal-card {
+            background: rgba(6, 78, 59, 0.7);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            backdrop-filter: blur(12px);
+            padding: 36px 28px;
+            border-radius: 16px;
+            max-width: 480px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .reveal-icon {
+            font-size: 4rem;
+            margin-bottom: 12px;
+        }
+
+        .reveal-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #a7f3d0;
+            margin-bottom: 12px;
+        }
+
+        .reveal-desc {
+            font-size: 0.95rem;
+            color: #d1fae5;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .educational-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 0.85rem;
+            text-align: left;
+            margin-bottom: 24px;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .btn-restart {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-restart:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Layar Pemicu (Agar Izin Fullscreen Sah Menurut Browser) -->
+    <div id="baitScreen" class="screen-container">
+        <div class="bait-card">
+            <div class="bait-icon">🛡️</div>
+            <h1 class="bait-title">Diagnostik Browser</h1>
+            <p class="bait-desc">Klik tombol di bawah untuk menjalankan pengujian performa dan keamanan browser Anda.</p>
+            <button class="btn-action" id="btnStart">Mulai Pemindaian</button>
+        </div>
+    </div>
+
+    <!-- 2. Layar Prank (Lock Screen Merah) -->
+    <div id="lockScreen" class="screen-container">
+        <div class="lock-warning-icon">⚠️</div>
+        <h1 class="lock-title">PERINGATAN SISTEM!</h1>
+        <p class="lock-subtitle">PERANGKAT TERKUNCI SEMENTARA</p>
+        
+        <div class="timer-box">
+            <div class="timer-label">Akses Dipulihkan Dalam</div>
+            <div class="timer-count" id="countdown">15</div>
+        </div>
+
+        <div class="progress-bar-wrap">
+            <div id="progressBar" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="academic-badge">
+            ℹ️ Simulasi Akademik: Eksperimen Reaksi Psikologis UI
+        </div>
+    </div>
+
+    <!-- 3. Layar Pengungkapan (Setelah Waktu Habis) -->
+    <div id="revealScreen" class="screen-container">
+        <div class="reveal-card">
+            <div class="reveal-icon">🎉</div>
+            <h1 class="reveal-title">ANDA KENA PRANK!</h1>
+            <p class="reveal-desc">Tenang, sistem dan data Anda 100% aman! Ini adalah simulasi pengujian akademik keamanan antarmuka.</p>
+            
+            <div class="educational-box">
+                💡 <b>Fakta Teknis Browser Sandbox:</b><br>
+                Situs web tidak pernah bisa mengunci perangkat Anda secara penuh. Tombol <b>Esc</b>, <b>Alt+F4</b>, tombol <b>Home</b>, atau gestur sistem operasi selalu dapat membebaskan Anda kapan saja.
+            </div>
+
+            <button class="btn-restart" id="btnRestart">Ulangi Simulasi</button>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_SECONDS = 15; // Durasi prank (15 detik)
+        let timeLeft = TOTAL_SECONDS;
+        let timerInterval = null;
+        let wakeLock = null;
+        let audioCtx = null;
+        let isPrankActive = false;
+
+        const baitScreen = document.getElementById('baitScreen');
+        const lockScreen = document.getElementById('lockScreen');
+        const revealScreen = document.getElementById('revealScreen');
+        const countdownEl = document.getElementById('countdown');
+        const progressBar = document.getElementById('progressBar');
+        const btnStart = document.getElementById('btnStart');
+        const btnRestart = document.getElementById('btnRestart');
+
+        // Generator Suara Sirene/Beep via Web Audio API (Bekerja offline tanpa file luar)
+        function playBeep(freq = 600, duration = 0.15) {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Abaikan jika audio tidak didukung
+            }
+        }
+
+        // Nada sukses ceria saat prank selesai
+        function playSuccessChime() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [440, 554, 659, 880];
+                notes.forEach((freq, idx) => {
+                    setTimeout(() => playBeep(freq, 0.3), idx * 120);
+                });
+            } catch (e) {}
+        }
+
+        // Aktifkan mode layar penuh (Fullscreen)
+        async function requestFullscreenSafe() {
+            const elem = document.documentElement;
+            try {
+                if (elem.requestFullscreen) {
+                    await elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    await elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    await elem.msRequestFullscreen();
+                }
+            } catch (err) {
+                console.warn("Fullscreen dibatasi browser:", err);
+            }
+        }
+
+        // Keluar dari mode layar penuh
+        function exitFullscreenSafe() {
+            try {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            } catch (err) {}
+        }
+
+        // Kunci layar agar tidak mati/redup (Wake Lock API)
+        async function enableWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (e) {}
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                try { wakeLock.release(); } catch (e) {}
+                wakeLock = null;
+            }
+        }
+
+        // Mulai Prank
+        async function startPrank() {
+            isPrankActive = true;
+            timeLeft = TOTAL_SECONDS;
+            countdownEl.innerText = timeLeft;
+            progressBar.style.width = '100%';
+
+            // Tampilkan Layar Kunci Merah
+            baitScreen.style.display = 'none';
+            revealScreen.style.display = 'none';
+            lockScreen.style.display = 'flex';
+
+            // Pemicu izin sah via interaksi klik
+            await requestFullscreenSafe();
+            await enableWakeLock();
+
+            // Bunyikan sirene awal
+            playBeep(450, 0.3);
+
+            // Pasang manipulasi riwayat (Back loop)
+            history.pushState(null, null, location.href);
+
+            // Interval hitung mundur
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft;
+                
+                // Update progress bar
+                const percent = (timeLeft / TOTAL_SECONDS) * 100;
+                progressBar.style.width = percent + '%';
+
+                // Bunyi bip tiap detik
+                if (timeLeft > 0) {
+                    playBeep(timeLeft % 2 === 0 ? 550 : 700, 0.12);
+                }
+
+                if (timeLeft <= 0) {
+                    finishPrank();
+                }
+            }, 1000);
+        }
+
+        // Akhiri Prank & Tampilkan Reveal
+        function finishPrank() {
+            clearInterval(timerInterval);
+            isPrankActive = false;
+
+            // Lepaskan Fullscreen & WakeLock
+            exitFullscreenSafe();
+            releaseWakeLock();
+
+            // Tampilkan Layar Ramah
+            lockScreen.style.display = 'none';
+            revealScreen.style.display = 'flex';
+
+            playSuccessChime();
+        }
+
+        // Reset kembali ke awal
+        function resetSimulation() {
+            revealScreen.style.display = 'none';
+            lockScreen.style.display = 'none';
+            baitScreen.style.display = 'flex';
+        }
+
+        // Event Listeners
+        btnStart.addEventListener('click', startPrank);
+        btnRestart.addEventListener('click', resetSimulation);
+
+        // Pertahankan fullscreen jika pengguna mengetuk layar saat lock aktif
+        lockScreen.addEventListener('click', () => {
+            if (isPrankActive && !document.fullscreenElement) {
+                requestFullscreenSafe();
+            }
+        });
+
+        // Loop tombol back selama prank berlangsung
+        window.addEventListener('popstate', () => {
+            if (isPrankActive) {
+                history.pushState(null, null, location.href);
+            }
+        });
+
+        // Dialog peringatan jika mencoba menutup tab saat prank berlangsung
+        window.addEventListener('beforeunload', (e) => {
+            if (isPrankActive) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>
