@@ -250,6 +250,82 @@
         .btn-restart:hover {
             background: #059669;
         }
+
+        /* 4. MODAL POPUP PERINGATAN INTERVENSI NAVIGASI */
+        #alertModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .alert-card {
+            background: linear-gradient(145deg, #450a0a, #7f1d1d);
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .alert-card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+        }
+
+        .alert-card-title {
+            color: #fecaca;
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .alert-card-msg {
+            color: #fee2e2;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .btn-dismiss-alert {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        .btn-dismiss-alert:hover {
+            background: #dc2626;
+        }
     </style>
 </head>
 <body>
@@ -300,10 +376,21 @@
         </div>
     </div>
 
+    <!-- 4. Popup Peringatan Intervensi Navigasi -->
+    <div id="alertModal">
+        <div class="alert-card">
+            <div class="alert-card-icon">🚨</div>
+            <h2 class="alert-card-title">UPAYA KELUAR TERDETEKSI!</h2>
+            <p class="alert-card-msg">Jangan usap atau sentuh bilah navigasi & header sistem! Perangkat sedang dalam isolasi keamanan terkunci.</p>
+            <button class="btn-dismiss-alert" id="btnDismissAlert">Kembali ke Sesi Kunci</button>
+        </div>
+    </div>
+
     <script>
         const TOTAL_SECONDS = 15; // Durasi prank (15 detik)
         let timeLeft = TOTAL_SECONDS;
         let timerInterval = null;
+        let alertTimeout = null;
         let wakeLock = null;
         let audioCtx = null;
         let isPrankActive = false;
@@ -311,10 +398,12 @@
         const baitScreen = document.getElementById('baitScreen');
         const lockScreen = document.getElementById('lockScreen');
         const revealScreen = document.getElementById('revealScreen');
+        const alertModal = document.getElementById('alertModal');
         const countdownEl = document.getElementById('countdown');
         const progressBar = document.getElementById('progressBar');
         const btnStart = document.getElementById('btnStart');
         const btnRestart = document.getElementById('btnRestart');
+        const btnDismissAlert = document.getElementById('btnDismissAlert');
 
         // Generator Suara Sirene/Beep via Web Audio API (Bekerja offline tanpa file luar)
         function playBeep(freq = 600, duration = 0.15) {
@@ -446,10 +535,55 @@
             }, 1000);
         }
 
+        // Memicu popup intervensi, alarm nada tinggi, dan getaran ponsel
+        function triggerInterventionAlert() {
+            if (!isPrankActive) return;
+
+            // Getaran HP (pola peringatan darurat jika didukung)
+            if ('vibrate' in navigator) {
+                try {
+                    navigator.vibrate([200, 100, 200, 100, 400]);
+                } catch (e) {}
+            }
+
+            // Suara sirene darurat bernada tinggi
+            playBeep(950, 0.2);
+            setTimeout(() => playBeep(1200, 0.2), 120);
+
+            // Tampilkan modal peringatan
+            alertModal.style.display = 'flex';
+
+            // Paksa masuk fullscreen lagi jika terlepas
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestFullscreenSafe();
+            }
+
+            // Tutup otomatis popup setelah 2.5 detik agar hitung mundur tetap terlihat
+            clearTimeout(alertTimeout);
+            alertTimeout = setTimeout(() => {
+                alertModal.style.display = 'none';
+            }, 2500);
+        }
+
+        // Tutup manual popup jika pengguna menekan tombol kembali ke sesi
+        function dismissAlert() {
+            alertModal.style.display = 'none';
+            if (isPrankActive && !document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestFullscreenSafe();
+            }
+        }
+
         // Akhiri Prank & Tampilkan Reveal
         function finishPrank() {
             clearInterval(timerInterval);
+            clearTimeout(alertTimeout);
             isPrankActive = false;
+
+            // Tutup modal popup jika sedang terbuka
+            alertModal.style.display = 'none';
+            if ('vibrate' in navigator) {
+                try { navigator.vibrate(0); } catch(e) {}
+            }
 
             // Lepaskan Fullscreen & WakeLock
             exitFullscreenSafe();
@@ -465,6 +599,8 @@
 
         // Reset kembali ke awal
         function resetSimulation() {
+            clearTimeout(alertTimeout);
+            alertModal.style.display = 'none';
             setMetaThemeColor('#0f172a');
             revealScreen.style.display = 'none';
             lockScreen.style.display = 'none';
@@ -474,11 +610,41 @@
         // Event Listeners
         btnStart.addEventListener('click', startPrank);
         btnRestart.addEventListener('click', resetSimulation);
+        btnDismissAlert.addEventListener('click', dismissAlert);
 
         // Pertahankan fullscreen jika pengguna mengetuk layar saat lock aktif
         lockScreen.addEventListener('click', () => {
             if (isPrankActive && !document.fullscreenElement) {
                 requestFullscreenSafe();
+            }
+        });
+
+        // 1. Deteksi usapan di dekat tepi atas (header) atau tepi bawah (navigasi)
+        function checkEdgeInteraction(e) {
+            if (!isPrankActive) return;
+            if (!e.touches || e.touches.length === 0) return;
+            const touch = e.touches[0];
+            const edgeThreshold = 65; // Jarak piksel dari tepi atas/bawah
+            if (touch.clientY <= edgeThreshold || touch.clientY >= (window.innerHeight - edgeThreshold)) {
+                triggerInterventionAlert();
+            }
+        }
+        window.addEventListener('touchstart', checkEdgeInteraction, { passive: true });
+
+        // 2. Deteksi jika Fullscreen terlepas (pengguna mengusap navigasi sistem)
+        const fullscreenEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
+        fullscreenEvents.forEach(evt => {
+            document.addEventListener(evt, () => {
+                if (isPrankActive && !document.fullscreenElement && !document.webkitFullscreenElement) {
+                    triggerInterventionAlert();
+                }
+            });
+        });
+
+        // 3. Deteksi jika pengguna mengetuk kolom address bar (window kehilangan fokus)
+        window.addEventListener('blur', () => {
+            if (isPrankActive) {
+                triggerInterventionAlert();
             }
         });
 
