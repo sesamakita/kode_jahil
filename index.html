@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#991b1b">
     <title>Uji Diagnostik Sistem</title>
     <style>
         * {
@@ -20,6 +24,7 @@
             overflow: hidden;
             background-color: #0f172a;
             color: #f8fafc;
+            overscroll-behavior: none; /* Cegah browser memunculkan address bar saat ditarik */
         }
 
         /* Container umum */
@@ -346,12 +351,13 @@
             } catch (e) {}
         }
 
-        // Aktifkan mode layar penuh (Fullscreen)
+        // Aktifkan mode layar penuh (Fullscreen) seagresif mungkin
         async function requestFullscreenSafe() {
             const elem = document.documentElement;
+            const options = { navigationUI: "hide" };
             try {
                 if (elem.requestFullscreen) {
-                    await elem.requestFullscreen();
+                    await elem.requestFullscreen(options);
                 } else if (elem.webkitRequestFullscreen) {
                     await elem.webkitRequestFullscreen();
                 } else if (elem.msRequestFullscreen) {
@@ -391,6 +397,12 @@
             }
         }
 
+        // Sinkronkan warna status bar Android
+        function setMetaThemeColor(color) {
+            let meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', color);
+        }
+
         // Mulai Prank
         async function startPrank() {
             isPrankActive = true;
@@ -398,7 +410,8 @@
             countdownEl.innerText = timeLeft;
             progressBar.style.width = '100%';
 
-            // Tampilkan Layar Kunci Merah
+            // Tampilkan Layar Kunci Merah & samarkan status bar
+            setMetaThemeColor('#991b1b');
             baitScreen.style.display = 'none';
             revealScreen.style.display = 'none';
             lockScreen.style.display = 'flex';
@@ -442,7 +455,8 @@
             exitFullscreenSafe();
             releaseWakeLock();
 
-            // Tampilkan Layar Ramah
+            // Tampilkan Layar Ramah & kembalikan warna tema
+            setMetaThemeColor('#064e3b');
             lockScreen.style.display = 'none';
             revealScreen.style.display = 'flex';
 
@@ -451,6 +465,7 @@
 
         // Reset kembali ke awal
         function resetSimulation() {
+            setMetaThemeColor('#0f172a');
             revealScreen.style.display = 'none';
             lockScreen.style.display = 'none';
             baitScreen.style.display = 'flex';
@@ -466,6 +481,13 @@
                 requestFullscreenSafe();
             }
         });
+
+        // Cegah gestur usap / scroll yang memicu address bar / header browser muncul
+        window.addEventListener('touchmove', (e) => {
+            if (isPrankActive) {
+                e.preventDefault();
+            }
+        }, { passive: false });
 
         // Loop tombol back selama prank berlangsung
         window.addEventListener('popstate', () => {
