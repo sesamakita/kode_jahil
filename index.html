@@ -3,669 +3,1329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#991b1b">
-    <title>Uji Diagnostik Sistem</title>
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="description" content="Survei Jadwal Kegiatan Perdana Komunitas GESSIT (Generasi Sulteng Sadar IT)">
+    <title>Survei Komunitas GESSIT - Generasi Sulteng Sadar IT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --bg-dark: #090d16;
+            --bg-card: rgba(17, 24, 39, 0.85);
+            --bg-card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
         * {
             box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            background-color: #0f172a;
-            color: #f8fafc;
-            overscroll-behavior: none; /* Cegah browser memunculkan address bar saat ditarik */
-        }
-
-        /* Container umum */
-        .screen-container {
-            width: 100vw;
-            height: 100vh;
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.2) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(30, 58, 138, 0.15) 0px, transparent 60%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-            text-align: center;
-            padding: 24px;
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
-
-        /* 1. LAYAR JEBAKAN (BAIT SCREEN) */
-        #baitScreen {
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            z-index: 10;
-        }
-
-        .bait-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            padding: 40px 30px;
-            border-radius: 16px;
-            max-width: 440px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-        }
-
-        .bait-icon {
-            font-size: 50px;
-            margin-bottom: 16px;
-        }
-
-        .bait-title {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .bait-desc {
-            font-size: 0.95rem;
-            color: #94a3b8;
+            justify-content: space-between;
             line-height: 1.5;
-            margin-bottom: 24px;
+            padding: 16px;
         }
 
-        .btn-action {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        .container {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Header Branding */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-top: 10px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(37, 99, 235, 0.18);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #60a5fa;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            backdrop-filter: blur(8px);
+        }
+
+        .brand-badge svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .brand-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #93c5fd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .brand-sub {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Card Container */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+
+        /* Steps Animation */
+        .step-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .step-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Step Progress indicator */
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .progress-line-bg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .progress-line-fill {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+            transform: translateY(-50%);
+            z-index: 2;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .step-node {
+            position: relative;
+            z-index: 3;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-node.completed, .step-node.current {
+            background: var(--primary);
+            border-color: #93c5fd;
+            color: white;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
+        }
+
+        /* Form elements */
+        .form-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .form-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            padding-left: 42px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #64748b;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+
+        .input-field:focus + .input-icon {
+            color: var(--accent-cyan);
+        }
+
+        .input-error {
+            color: #f87171;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Action Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 15px 24px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             border: none;
-            padding: 14px 28px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
-            font-weight: 600;
-            border-radius: 10px;
+            font-weight: 700;
+            font-family: inherit;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-            width: 100%;
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.5);
+            margin-top: 8px;
         }
 
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
-        /* 2. LAYAR KUNCI PRANK (LOCK SCREEN) */
-        #lockScreen {
-            background: #b91c1c;
-            color: white;
-            z-index: 20;
-            display: none;
-            touch-action: none;
-            animation: pulseBg 1.5s infinite alternate;
+        /* Survey Question Section */
+        .respondent-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 18px;
         }
 
-        @keyframes pulseBg {
-            0% { background-color: #991b1b; }
-            100% { background-color: #dc2626; }
+        .respondent-chip strong {
+            color: #38bdf8;
         }
 
-        .lock-warning-icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            animation: bounce 1s infinite;
+        .survey-question-box {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 22px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        .survey-question-box::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--primary));
         }
 
-        .lock-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-            margin-bottom: 10px;
-        }
-
-        .lock-subtitle {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .timer-box {
-            background: rgba(0, 0, 0, 0.45);
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            padding: 18px 32px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            min-width: 280px;
-        }
-
-        .timer-label {
-            font-size: 0.9rem;
+        .survey-question-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.85;
+            letter-spacing: 0.06em;
+            color: var(--accent-cyan);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .survey-question-text {
+            font-size: 1.02rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.45;
+        }
+
+        /* 3 OPSI TOMBOL */
+        .survey-options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .survey-btn-option {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: left;
+            color: #f1f5f9;
+            cursor: pointer;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .survey-btn-option:hover {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(37, 99, 235, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .survey-btn-option:active {
+            transform: scale(0.98);
+        }
+
+        .option-left-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .option-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #38bdf8;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .survey-btn-option:hover .option-icon-box {
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .option-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+        }
+
+        .option-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        .option-arrow {
+            width: 22px;
+            height: 22px;
+            color: #64748b;
+            flex-shrink: 0;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .survey-btn-option:hover .option-arrow {
+            color: #38bdf8;
+            transform: translateX(3px);
+        }
+
+        /* Success & Confirmation Screen */
+        .success-box {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .success-icon-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: #34d399;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+            animation: pulseSuccess 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseSuccess {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+
+        .success-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffffff;
             margin-bottom: 6px;
         }
 
-        .timer-count {
-            font-size: 2.6rem;
-            font-weight: 800;
-            font-family: monospace;
-            color: #fef08a;
-            text-shadow: 0 0 10px rgba(254, 240, 138, 0.5);
+        .success-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 22px;
         }
 
-        .progress-bar-wrap {
-            width: 80%;
-            max-width: 320px;
-            height: 10px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 100%;
-            background: #fef08a;
-            transition: width 1s linear;
-        }
-
-        .academic-badge {
-            font-size: 0.78rem;
-            opacity: 0.8;
-            background: rgba(0, 0, 0, 0.35);
-            padding: 6px 14px;
-            border-radius: 20px;
-            max-width: 90%;
-        }
-
-        /* 3. LAYAR PENGUNGKAPAN (REVEAL SCREEN) */
-        #revealScreen {
-            background: radial-gradient(circle at center, #065f46 0%, #064e3b 100%);
-            color: #ecfdf5;
-            z-index: 30;
-            display: none;
-        }
-
-        .reveal-card {
-            background: rgba(6, 78, 59, 0.7);
-            border: 1px solid rgba(52, 211, 153, 0.3);
-            backdrop-filter: blur(12px);
-            padding: 36px 28px;
-            border-radius: 16px;
-            max-width: 480px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
-        }
-
-        .reveal-icon {
-            font-size: 4rem;
-            margin-bottom: 12px;
-        }
-
-        .reveal-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #a7f3d0;
-            margin-bottom: 12px;
-        }
-
-        .reveal-desc {
-            font-size: 0.95rem;
-            color: #d1fae5;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .educational-box {
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 10px;
-            padding: 14px;
-            font-size: 0.85rem;
+        .ticket-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            padding: 18px;
             text-align: left;
-            margin-bottom: 24px;
-            color: #e2e8f0;
-            line-height: 1.5;
+            margin-bottom: 22px;
         }
 
-        .btn-restart {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
+        .ticket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.85rem;
+        }
+
+        .ticket-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ticket-label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .ticket-val {
+            font-weight: 700;
+            color: #f1f5f9;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .ticket-val.highlight {
+            color: #38bdf8;
+        }
+
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-wa {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
             font-weight: 600;
-            border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
         }
 
-        .btn-restart:hover {
-            background: #059669;
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
         }
 
-        /* 4. MODAL POPUP PERINGATAN INTERVENSI NAVIGASI */
-        #alertModal {
+        /* Modal Dialog Konfirmasi */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            animation: modalPop 0.25s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        /* Footer & Admin Rekap Button */
+        footer {
+            text-align: center;
+            padding: 16px 0 6px;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .admin-link {
+            background: none;
+            border: none;
+            color: #64748b;
+            text-decoration: underline;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 6px;
+            display: inline-block;
+            transition: color 0.2s;
+        }
+
+        .admin-link:hover {
+            color: #93c5fd;
+        }
+
+        /* Admin Recap Panel */
+        .recap-section {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            justify-content: center;
+            right: 0;
+            bottom: 0;
+            background: rgba(9, 13, 22, 0.96);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px 16px;
+        }
+
+        .recap-section.active {
+            display: block;
+        }
+
+        .recap-container {
+            max-width: 640px;
+            margin: 0 auto;
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+        }
+
+        .recap-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-            animation: fadeIn 0.2s ease;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .alert-card {
-            background: linear-gradient(145deg, #450a0a, #7f1d1d);
-            border: 2px solid #ef4444;
-            border-radius: 16px;
-            padding: 28px 24px;
-            max-width: 380px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
-
-        .alert-card-icon {
-            font-size: 3.5rem;
+        .stat-card {
+            background: rgba(17, 24, 39, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 14px;
             margin-bottom: 12px;
         }
 
-        .alert-card-title {
-            color: #fecaca;
-            font-size: 1.35rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+        .stat-bar-bg {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 8px;
         }
 
-        .alert-card-msg {
-            color: #fee2e2;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
+        .stat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #06b6d4);
+            border-radius: 9999px;
+            transition: width 0.5s ease;
         }
 
-        .btn-dismiss-alert {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-weight: 700;
-            border-radius: 8px;
-            cursor: pointer;
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+
+        table {
             width: 100%;
-            font-size: 0.95rem;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            text-align: left;
         }
-        .btn-dismiss-alert:hover {
-            background: #dc2626;
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        /* Responsive Tweaks */
+        @media (max-width: 400px) {
+            .brand-title {
+                font-size: 1.45rem;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+            .survey-btn-option {
+                padding: 14px 12px;
+            }
+            .option-icon-box {
+                width: 36px;
+                height: 36px;
+            }
+            .option-title {
+                font-size: 0.88rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. Layar Pemicu (Agar Izin Fullscreen Sah Menurut Browser) -->
-    <div id="baitScreen" class="screen-container">
-        <div class="bait-card">
-            <div class="bait-icon">🛡️</div>
-            <h1 class="bait-title">Uji Nyali</h1>
-            <p class="bait-desc">Klik tombol di bawah untuk menguji mental kamu bukti kamu berani.</p>
-            <button class="btn-action" id="btnStart">Saya Berani</button>
-        </div>
-    </div>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="brand-header">
+            <div class="brand-badge">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                KOMUNITAS GESSIT
+            </div>
+            <h1 class="brand-title">Portal Survei Jadwal</h1>
+            <p class="brand-sub">Generasi Sulteng Sadar IT &bull; Kegiatan Perdana</p>
+        </header>
 
-    <!-- 2. Layar Prank (Lock Screen Merah) -->
-    <div id="lockScreen" class="screen-container">
-        <div class="lock-warning-icon">⚠️</div>
-        <h1 class="lock-title">PERINGATAN SISTEM!</h1>
-        <p class="lock-subtitle">PERANGKAT TERKUNCI SEMENTARA</p>
-        
-        <div class="timer-box">
-            <div class="timer-label">Akses Dipulihkan Dalam</div>
-            <div class="timer-count" id="countdown">20</div>
-        </div>
-
-        <div class="progress-bar-wrap">
-            <div id="progressBar" class="progress-bar-fill"></div>
-        </div>
-
-    </div>
-
-    <!-- 3. Layar Pengungkapan (Setelah Waktu Habis) -->
-    <div id="revealScreen" class="screen-container">
-        <div class="reveal-card">
-            <div class="reveal-icon">🎉</div>
-            <h1 class="reveal-title">ANDA KENA PRANK!</h1>
-            <p class="reveal-desc">Tenang, sistem dan data Anda 100% aman! Ini adalah simulasi aksi jahil</p>
-            
-            <div class="educational-box">
-                💡 <b>From Bang Devand</b><br>
-                Situs web tidak pernah bisa mengunci perangkat Anda secara penuh. Tombol <b>Esc</b>, <b>Alt+F4</b>, tombol <b>Home</b>, atau gestur sistem operasi selalu dapat membebaskan Anda kapan saja.
+        <!-- MAIN CARD CONTAINER -->
+        <main class="card">
+            <!-- PROGRESS STEP BAR -->
+            <div class="progress-bar-container">
+                <div class="progress-line-bg"></div>
+                <div class="progress-line-fill" id="progressFill"></div>
+                <div class="step-node current" id="node1">1</div>
+                <div class="step-node" id="node2">2</div>
+                <div class="step-node" id="node3">3</div>
             </div>
 
-            <button class="btn-restart" id="btnRestart">Ulangi Simulasi</button>
+            <!-- LANGKAH 1: INPUT NAMA & KELAS -->
+            <section class="step-section active" id="step1">
+                <h2 class="form-title">Data Responden</h2>
+                <p class="form-desc">Silakan masukkan data diri Anda sebelum memilih ketersediaan jadwal.</p>
+
+                <form id="identityForm" onsubmit="handleIdentitySubmit(event)">
+                    <div class="input-group">
+                        <label class="input-label" for="respondentName">Nama Lengkap</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="respondentName" class="input-field" placeholder="Contoh: Muhammad Fikri" autocomplete="name" required>
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <div class="input-error" id="nameError">Harap masukkan nama lengkap Anda.</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="respondentClass">Kelas / Instansi</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="respondentClass" class="input-field" placeholder="Contoh: XII RPL 1 / XI IPA 2" required>
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                            </svg>
+                        </div>
+                        <div class="input-error" id="classError">Harap masukkan kelas Anda.</div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        <span>Lanjut ke Survei</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- LANGKAH 2: PERTANYAAN & 3 TOMBOL OPSI -->
+            <section class="step-section" id="step2">
+                <div class="respondent-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span>Peserta: <strong id="chipName">-</strong> (<span id="chipClass">-</span>)</span>
+                </div>
+
+                <div class="survey-question-box">
+                    <span class="survey-question-tag">Pertanyaan Survei</span>
+                    <p class="survey-question-text">
+                        "Pilihlah Jawaban berikut ini, jika anda bersedia mengikuti kegiatan Perdana Komunitas GESSIT (Generasi Sulteng Sadar IT)"
+                    </p>
+                </div>
+
+                <div class="survey-options-group">
+                    <!-- OPSI 1 -->
+                    <button type="button" class="survey-btn-option" onclick="selectScheduleOption('Sabtu 26/9/2026, Jam 12.30 - 14.30')">
+                        <div class="option-left-content">
+                            <div class="option-icon-box">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="option-title">Sabtu 26/9/2026, Jam 12.30 - 14.30</div>
+                                <div class="option-sub">Pilihan Hari Pertama</div>
+                            </div>
+                        </div>
+                        <svg class="option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- OPSI 2 -->
+                    <button type="button" class="survey-btn-option" onclick="selectScheduleOption('Minggu 27/9/2026 Jam 12.30 - 14.30')">
+                        <div class="option-left-content">
+                            <div class="option-icon-box">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="option-title">Minggu 27/9/2026 Jam 12.30 - 14.30</div>
+                                <div class="option-sub">Pilihan Hari Kedua</div>
+                            </div>
+                        </div>
+                        <svg class="option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- OPSI 3 -->
+                    <button type="button" class="survey-btn-option" onclick="selectScheduleOption('Terserah, Sabtu atau Minggu saya bisa')">
+                        <div class="option-left-content">
+                            <div class="option-icon-box">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="option-title">Terserah, Sabtu atau Minggu saya bisa</div>
+                                <div class="option-sub">Fleksibel (Kedua Hari Siap)</div>
+                            </div>
+                        </div>
+                        <svg class="option-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="button" class="btn-secondary" onclick="goToStep(1)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span>Ubah Identitas</span>
+                </button>
+            </section>
+
+            <!-- LANGKAH 3: TERIMA KASIH & BUKTI PARTISIPASI -->
+            <section class="step-section" id="step3">
+                <div class="success-box">
+                    <div class="success-icon-wrap">
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+
+                    <h2 class="success-title">Jawaban Tersimpan!</h2>
+                    <p class="success-desc">Terima kasih atas kesediaan Anda bergabung dalam kegiatan perdana Komunitas GESSIT.</p>
+
+                    <!-- KARTU BUKTI -->
+                    <div class="ticket-card">
+                        <div class="ticket-item">
+                            <span class="ticket-label">Nama Lengkap</span>
+                            <span class="ticket-val" id="receiptName">-</span>
+                        </div>
+                        <div class="ticket-item">
+                            <span class="ticket-label">Kelas / Instansi</span>
+                            <span class="ticket-val" id="receiptClass">-</span>
+                        </div>
+                        <div class="ticket-item">
+                            <span class="ticket-label">Pilihan Jadwal</span>
+                            <span class="ticket-val highlight" id="receiptChoice">-</span>
+                        </div>
+                        <div class="ticket-item">
+                            <span class="ticket-label">Waktu Pengisian</span>
+                            <span class="ticket-val" id="receiptTime">-</span>
+                        </div>
+                        <div class="ticket-item" id="telegramStatusRow" style="display: none;">
+                            <span class="ticket-label">Status Notifikasi</span>
+                            <span class="ticket-val" id="telegramStatusBadge" style="color: #34d399; font-size: 0.8rem;">✓ Terkirim ke Telegram</span>
+                        </div>
+                    </div>
+
+                    <div class="success-actions">
+                        <button type="button" class="btn-primary btn-wa" onclick="sendToWhatsApp()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.979-.276-.1-.476-.15-.676.15-.2.301-.776.979-.951 1.179-.176.2-.351.226-.652.075s-1.272-.469-2.424-1.496c-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.135-.135.301-.351.451-.527.151-.176.201-.301.301-.502.1-.2.05-.376-.025-.526-.075-.15-.676-1.63-.927-2.232-.244-.587-.492-.507-.676-.516l-.577-.01c-.2 0-.526.075-.802.376s-1.053 1.028-1.053 2.507c0 1.479 1.078 2.908 1.229 3.109.15.2 2.122 3.24 5.141 4.543.719.31 1.28.496 1.718.636.723.23 1.381.197 1.901.12.58-.087 1.78-.727 2.03-1.429.25-.702.25-1.304.175-1.429-.074-.125-.275-.2-.576-.35zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.982-1.39A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                            </svg>
+                            <span>Kirim Bukti ke WhatsApp Panitia</span>
+                        </button>
+
+                        <button type="button" class="btn-secondary" onclick="resetSurveyForm()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2.5 2v6h6M21.5 22v-6h-6"></path>
+                                <path d="M22 11.5A10 10 0 0 0 3.2 7.2L2.5 8M2 12.5a10 10 0 0 0 18.8 4.3l.7.7"></path>
+                            </svg>
+                            <span>Isi Survei untuk Responden Lain</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>&copy; 2026 Komunitas GESSIT. All rights reserved.</p>
+            <button type="button" class="admin-link" onclick="openRecapModal()">
+                &bull; Lihat Rekapitulasi Suara &bull;
+            </button>
+        </footer>
+    </div>
+
+    <!-- MODAL KONFIRMASI PEMILIHAN -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <h3 style="font-size: 1.15rem; margin-bottom: 8px;">Konfirmasi Pilihan</h3>
+            <p style="font-size: 0.88rem; color: #94a3b8; margin-bottom: 16px;">
+                Apakah Anda yakin memilih jadwal ini?
+            </p>
+            <div style="background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+                <div style="font-size: 0.95rem; font-weight: 700; color: #60a5fa;" id="modalSelectedChoice">-</div>
+            </div>
+            <div class="modal-btn-row">
+                <button type="button" class="btn-secondary" style="flex: 1;" onclick="closeConfirmModal()">Batal</button>
+                <button type="button" class="btn-primary" id="btnConfirmFinal" style="flex: 1.2; margin-top: 0;" onclick="finalizeSelection()">Ya, Simpan</button>
+            </div>
         </div>
     </div>
 
-    <!-- 4. Popup Peringatan Intervensi Navigasi -->
-    <div id="alertModal">
-        <div class="alert-card">
-            <div class="alert-card-icon">🚨</div>
-            <h2 class="alert-card-title">UPAYA KELUAR TERDETEKSI!</h2>
-            <p class="alert-card-msg">Jangan usap atau sentuh bilah navigasi & header sistem! Perangkat sedang dalam isolasi keamanan terkunci.</p>
-            <button class="btn-dismiss-alert" id="btnDismissAlert">Kembali ke Sesi Kunci</button>
+    <!-- PANEL REKAPITULASI PANITIA -->
+    <div class="recap-section" id="recapSection">
+        <div class="recap-container">
+            <div class="recap-header">
+                <div>
+                    <h2 style="font-size: 1.2rem; font-weight: 800; color: white;">Rekapitulasi Survei GESSIT</h2>
+                    <p style="font-size: 0.8rem; color: #94a3b8;">Data respon tersimpan di browser ini</p>
+                </div>
+                <button type="button" class="btn-secondary" style="width: auto; padding: 6px 12px;" onclick="closeRecapModal()">Tutup &times;</button>
+            </div>
+
+            <!-- RINGKASAN PERSENTASE -->
+            <div id="statBoxes">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div style="display: flex; gap: 10px; margin: 16px 0;">
+                <button type="button" class="btn-primary" style="margin-top: 0; font-size: 0.88rem; padding: 10px 16px;" onclick="exportToCSV()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>Download CSV (Excel)</span>
+                </button>
+                <button type="button" class="btn-secondary" style="width: auto; font-size: 0.88rem; padding: 10px 16px; color: #f87171;" onclick="clearAllData()">
+                    Reset Data
+                </button>
+            </div>
+
+            <h3 style="font-size: 0.95rem; margin-top: 20px; color: #e2e8f0;">Daftar Responden Masuk (<span id="totalCount">0</span>)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Pilihan Jadwal</th>
+                            <th>Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recapTableBody">
+                        <!-- Dynamically filled -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        const TOTAL_SECONDS = 20; // Durasi prank (20 detik)
-        let timeLeft = TOTAL_SECONDS;
-        let timerInterval = null;
-        let alertTimeout = null;
-        let wakeLock = null;
-        let audioCtx = null;
-        let isPrankActive = false;
+        // State survei sementara
+        let currentRespondent = {
+            name: '',
+            studentClass: '',
+            selectedOption: ''
+        };
 
-        const baitScreen = document.getElementById('baitScreen');
-        const lockScreen = document.getElementById('lockScreen');
-        const revealScreen = document.getElementById('revealScreen');
-        const alertModal = document.getElementById('alertModal');
-        const countdownEl = document.getElementById('countdown');
-        const progressBar = document.getElementById('progressBar');
-        const btnStart = document.getElementById('btnStart');
-        const btnRestart = document.getElementById('btnRestart');
-        const btnDismissAlert = document.getElementById('btnDismissAlert');
+        const STORAGE_KEY = 'gessit_survey_records_v1';
+        const OPTIONS = [
+            'Sabtu 26/9/2026, Jam 12.30 - 14.30',
+            'Minggu 27/9/2026 Jam 12.30 - 14.30',
+            'Terserah, Sabtu atau Minggu saya bisa'
+        ];
 
-        // Generator Suara Sirene/Beep via Web Audio API (Bekerja offline tanpa file luar)
-        function playBeep(freq = 600, duration = 0.15) {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {
-                // Abaikan jika audio tidak didukung
+        // Validasi dan alur langkah
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.step-section').forEach(sec => sec.classList.remove('active'));
+            const targetStep = document.getElementById('step' + stepNumber);
+            if (targetStep) targetStep.classList.add('active');
+
+            // Update node status
+            const progressFill = document.getElementById('progressFill');
+            const node1 = document.getElementById('node1');
+            const node2 = document.getElementById('node2');
+            const node3 = document.getElementById('node3');
+
+            if (stepNumber === 1) {
+                progressFill.style.width = '0%';
+                node1.className = 'step-node current';
+                node2.className = 'step-node';
+                node3.className = 'step-node';
+            } else if (stepNumber === 2) {
+                progressFill.style.width = '50%';
+                node1.className = 'step-node completed';
+                node2.className = 'step-node current';
+                node3.className = 'step-node';
+            } else if (stepNumber === 3) {
+                progressFill.style.width = '100%';
+                node1.className = 'step-node completed';
+                node2.className = 'step-node completed';
+                node3.className = 'step-node current';
             }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Nada sukses ceria saat prank selesai
-        function playSuccessChime() {
+        function handleIdentitySubmit(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('respondentName');
+            const classInput = document.getElementById('respondentClass');
+            const nameError = document.getElementById('nameError');
+            const classError = document.getElementById('classError');
+
+            let isValid = true;
+
+            if (!nameInput.value.trim()) {
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameError.style.display = 'none';
+            }
+
+            if (!classInput.value.trim()) {
+                classError.style.display = 'block';
+                isValid = false;
+            } else {
+                classError.style.display = 'none';
+            }
+
+            if (!isValid) return;
+
+            currentRespondent.name = nameInput.value.trim();
+            currentRespondent.studentClass = classInput.value.trim();
+
+            document.getElementById('chipName').textContent = currentRespondent.name;
+            document.getElementById('chipClass').textContent = currentRespondent.studentClass;
+
+            // Trigger gentle haptic if available
+            if (navigator.vibrate) navigator.vibrate(30);
+
+            goToStep(2);
+        }
+
+        let pendingChoice = '';
+        function selectScheduleOption(optionText) {
+            pendingChoice = optionText;
+            document.getElementById('modalSelectedChoice').textContent = optionText;
+            document.getElementById('confirmModal').classList.add('active');
+
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            pendingChoice = '';
+        }
+
+        async function finalizeSelection() {
+            if (!pendingChoice) return;
+            const btnConfirm = document.getElementById('btnConfirmFinal');
+            if (btnConfirm) {
+                btnConfirm.disabled = true;
+                btnConfirm.textContent = 'Menyimpan...';
+            }
+
+            currentRespondent.selectedOption = pendingChoice;
+            const now = new Date();
+            const formattedTime = now.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const record = {
+                id: 'GES-' + Date.now().toString(36).toUpperCase(),
+                name: currentRespondent.name,
+                studentClass: currentRespondent.studentClass,
+                choice: currentRespondent.selectedOption,
+                timestamp: formattedTime,
+                rawDate: now.toISOString()
+            };
+
+            // Simpan ke localStorage (backup offline)
+            saveRecordToStorage(record);
+
+            // Isi rincian kartu bukti
+            document.getElementById('receiptName').textContent = record.name;
+            document.getElementById('receiptClass').textContent = record.studentClass;
+            document.getElementById('receiptChoice').textContent = record.choice;
+            document.getElementById('receiptTime').textContent = record.timestamp;
+
+            // Reset status badge Telegram
+            const tgRow = document.getElementById('telegramStatusRow');
+            const tgBadge = document.getElementById('telegramStatusBadge');
+            if (tgRow) tgRow.style.display = 'none';
+
+            // Kirim ke Vercel Serverless API /api/submit
             try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const notes = [440, 554, 659, 880];
-                notes.forEach((freq, idx) => {
-                    setTimeout(() => playBeep(freq, 0.3), idx * 120);
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
                 });
-            } catch (e) {}
-        }
-
-        // Aktifkan mode layar penuh (Fullscreen) seagresif mungkin
-        async function requestFullscreenSafe() {
-            const elem = document.documentElement;
-            const options = { navigationUI: "hide" };
-            try {
-                if (elem.requestFullscreen) {
-                    await elem.requestFullscreen(options);
-                } else if (elem.webkitRequestFullscreen) {
-                    await elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) {
-                    await elem.msRequestFullscreen();
+                const result = await response.json();
+                if (result.success && !result.warning) {
+                    if (tgRow && tgBadge) {
+                        tgRow.style.display = 'flex';
+                        tgBadge.textContent = '✓ Notifikasi Terkirim ke Telegram Panitia';
+                        tgBadge.style.color = '#34d399';
+                    }
+                } else if (result.warning) {
+                    console.info('Telegram info:', result.warning);
                 }
             } catch (err) {
-                console.warn("Fullscreen dibatasi browser:", err);
+                console.warn('Pengiriman ke /api/submit dilewati:', err);
+            } finally {
+                if (btnConfirm) {
+                    btnConfirm.disabled = false;
+                    btnConfirm.textContent = 'Ya, Simpan';
+                }
+                closeConfirmModal();
+                goToStep(3);
+                if (navigator.vibrate) navigator.vibrate([40, 50, 60]);
             }
         }
 
-        // Keluar dari mode layar penuh
-        function exitFullscreenSafe() {
+        function saveRecordToStorage(record) {
+            let records = [];
             try {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
-                }
-            } catch (err) {}
-        }
-
-        // Kunci layar agar tidak mati/redup (Wake Lock API)
-        async function enableWakeLock() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) records = JSON.parse(stored);
+            } catch (err) {
+                console.error("Gagal membaca localStorage", err);
+            }
+            records.push(record);
             try {
-                if ('wakeLock' in navigator) {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                }
-            } catch (e) {}
-        }
-
-        function releaseWakeLock() {
-            if (wakeLock) {
-                try { wakeLock.release(); } catch (e) {}
-                wakeLock = null;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            } catch (err) {
+                console.error("Gagal menyimpan ke localStorage", err);
             }
         }
 
-        // Sinkronkan warna status bar Android
-        function setMetaThemeColor(color) {
-            let meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute('content', color);
-        }
-
-        // Mulai Prank
-        async function startPrank() {
-            isPrankActive = true;
-            timeLeft = TOTAL_SECONDS;
-            countdownEl.innerText = timeLeft;
-            progressBar.style.width = '100%';
-
-            // Tampilkan Layar Kunci Merah & samarkan status bar
-            setMetaThemeColor('#991b1b');
-            baitScreen.style.display = 'none';
-            revealScreen.style.display = 'none';
-            lockScreen.style.display = 'flex';
-
-            // Pemicu izin sah via interaksi klik
-            await requestFullscreenSafe();
-            await enableWakeLock();
-
-            // Bunyikan sirene awal
-            playBeep(450, 0.3);
-
-            // Pasang manipulasi riwayat (Back loop)
-            history.pushState(null, null, location.href);
-
-            // Interval hitung mundur
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                countdownEl.innerText = timeLeft;
-                
-                // Update progress bar
-                const percent = (timeLeft / TOTAL_SECONDS) * 100;
-                progressBar.style.width = percent + '%';
-
-                // Bunyi bip tiap detik
-                if (timeLeft > 0) {
-                    playBeep(timeLeft % 2 === 0 ? 550 : 700, 0.12);
-                }
-
-                if (timeLeft <= 0) {
-                    finishPrank();
-                }
-            }, 1000);
-        }
-
-        // Memicu popup intervensi, alarm nada tinggi, dan getaran ponsel
-        function triggerInterventionAlert() {
-            if (!isPrankActive) return;
-
-            // Getaran HP (pola peringatan darurat jika didukung)
-            if ('vibrate' in navigator) {
-                try {
-                    navigator.vibrate([200, 100, 200, 100, 400]);
-                } catch (e) {}
-            }
-
-            // Suara sirene darurat bernada tinggi
-            playBeep(950, 0.2);
-            setTimeout(() => playBeep(1200, 0.2), 120);
-
-            // Tampilkan modal peringatan
-            alertModal.style.display = 'flex';
-
-            // Paksa masuk fullscreen lagi jika terlepas
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                requestFullscreenSafe();
-            }
-
-            // Tutup otomatis popup setelah 2.5 detik agar hitung mundur tetap terlihat
-            clearTimeout(alertTimeout);
-            alertTimeout = setTimeout(() => {
-                alertModal.style.display = 'none';
-            }, 2500);
-        }
-
-        // Tutup manual popup jika pengguna menekan tombol kembali ke sesi
-        function dismissAlert() {
-            alertModal.style.display = 'none';
-            if (isPrankActive && !document.fullscreenElement && !document.webkitFullscreenElement) {
-                requestFullscreenSafe();
+        function getStoredRecords() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                return stored ? JSON.parse(stored) : [];
+            } catch (err) {
+                console.error("Gagal parsing data", err);
+                return [];
             }
         }
 
-        // Akhiri Prank & Tampilkan Reveal
-        function finishPrank() {
-            clearInterval(timerInterval);
-            clearTimeout(alertTimeout);
-            isPrankActive = false;
-
-            // Tutup modal popup jika sedang terbuka
-            alertModal.style.display = 'none';
-            if ('vibrate' in navigator) {
-                try { navigator.vibrate(0); } catch(e) {}
-            }
-
-            // Lepaskan Fullscreen & WakeLock
-            exitFullscreenSafe();
-            releaseWakeLock();
-
-            // Tampilkan Layar Ramah & kembalikan warna tema
-            setMetaThemeColor('#064e3b');
-            lockScreen.style.display = 'none';
-            revealScreen.style.display = 'flex';
-
-            playSuccessChime();
+        function resetSurveyForm() {
+            document.getElementById('identityForm').reset();
+            currentRespondent = { name: '', studentClass: '', selectedOption: '' };
+            goToStep(1);
         }
 
-        // Reset kembali ke awal
-        function resetSimulation() {
-            clearTimeout(alertTimeout);
-            alertModal.style.display = 'none';
-            setMetaThemeColor('#0f172a');
-            revealScreen.style.display = 'none';
-            lockScreen.style.display = 'none';
-            baitScreen.style.display = 'flex';
+        // WhatsApp Share
+        function sendToWhatsApp() {
+            const text = `*KONFIRMASI SURVEI KEGIATAN GESSIT*%0A%0A` +
+                         `*Nama:* ${encodeURIComponent(currentRespondent.name)}%0A` +
+                         `*Kelas:* ${encodeURIComponent(currentRespondent.studentClass)}%0A` +
+                         `*Pilihan Jadwal:* ${encodeURIComponent(currentRespondent.selectedOption)}%0A%0A` +
+                         `_Survei Kegiatan Perdana Komunitas GESSIT (Generasi Sulteng Sadar IT)_`;
+            
+            // Membuka WhatsApp (bisa diteruskan ke kontak panitia atau grup)
+            const waUrl = `https://api.whatsapp.com/send?text=${text}`;
+            window.open(waUrl, '_blank');
         }
 
-        // Event Listeners
-        btnStart.addEventListener('click', startPrank);
-        btnRestart.addEventListener('click', resetSimulation);
-        btnDismissAlert.addEventListener('click', dismissAlert);
-
-        // Pertahankan fullscreen jika pengguna mengetuk layar saat lock aktif
-        lockScreen.addEventListener('click', () => {
-            if (isPrankActive && !document.fullscreenElement) {
-                requestFullscreenSafe();
-            }
-        });
-
-        // 1. Deteksi usapan di dekat tepi atas (header) atau tepi bawah (navigasi)
-        function checkEdgeInteraction(e) {
-            if (!isPrankActive) return;
-            if (!e.touches || e.touches.length === 0) return;
-            const touch = e.touches[0];
-            const edgeThreshold = 65; // Jarak piksel dari tepi atas/bawah
-            if (touch.clientY <= edgeThreshold || touch.clientY >= (window.innerHeight - edgeThreshold)) {
-                triggerInterventionAlert();
-            }
+        // Admin Rekapitulasi Modal
+        function openRecapModal() {
+            renderRecapData();
+            document.getElementById('recapSection').classList.add('active');
         }
-        window.addEventListener('touchstart', checkEdgeInteraction, { passive: true });
 
-        // 2. Deteksi jika Fullscreen terlepas (pengguna mengusap navigasi sistem)
-        const fullscreenEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
-        fullscreenEvents.forEach(evt => {
-            document.addEventListener(evt, () => {
-                if (isPrankActive && !document.fullscreenElement && !document.webkitFullscreenElement) {
-                    triggerInterventionAlert();
+        function closeRecapModal() {
+            document.getElementById('recapSection').classList.remove('active');
+        }
+
+        function renderRecapData() {
+            const records = getStoredRecords();
+            const total = records.length;
+            document.getElementById('totalCount').textContent = total;
+
+            // Hitung suara per opsi
+            const counts = {};
+            OPTIONS.forEach(opt => counts[opt] = 0);
+
+            records.forEach(r => {
+                if (counts[r.choice] !== undefined) {
+                    counts[r.choice]++;
+                } else {
+                    counts[r.choice] = 1;
                 }
             });
-        });
 
-        // 3. Deteksi jika pengguna mengetuk kolom address bar (window kehilangan fokus)
-        window.addEventListener('blur', () => {
-            if (isPrankActive) {
-                triggerInterventionAlert();
-            }
-        });
+            // Render stat boxes
+            const statBoxesContainer = document.getElementById('statBoxes');
+            statBoxesContainer.innerHTML = '';
 
-        // Cegah gestur usap / scroll yang memicu address bar / header browser muncul
-        window.addEventListener('touchmove', (e) => {
-            if (isPrankActive) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+            OPTIONS.forEach((opt, idx) => {
+                const count = counts[opt] || 0;
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
 
-        // Loop tombol back selama prank berlangsung
-        window.addEventListener('popstate', () => {
-            if (isPrankActive) {
-                history.pushState(null, null, location.href);
-            }
-        });
+                const box = document.createElement('div');
+                box.className = 'stat-card';
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700;">
+                        <span style="color:#f1f5f9;">${opt}</span>
+                        <span style="color:#38bdf8;">${count} suara (${pct}%)</span>
+                    </div>
+                    <div class="stat-bar-bg">
+                        <div class="stat-bar-fill" style="width: ${pct}%;"></div>
+                    </div>
+                `;
+                statBoxesContainer.appendChild(box);
+            });
 
-        // Dialog peringatan jika mencoba menutup tab saat prank berlangsung
-        window.addEventListener('beforeunload', (e) => {
-            if (isPrankActive) {
-                e.preventDefault();
-                e.returnValue = '';
+            // Render tabel responden
+            const tbody = document.getElementById('recapTableBody');
+            tbody.innerHTML = '';
+
+            if (records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px;">Belum ada responden yang mengisi survei di perangkat ini.</td></tr>';
+                return;
             }
-        });
+
+            records.slice().reverse().forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td style="font-weight:600; color:white;">${escapeHtml(r.name)}</td>
+                    <td>${escapeHtml(r.studentClass)}</td>
+                    <td style="color:#60a5fa;">${escapeHtml(r.choice)}</td>
+                    <td style="color:#94a3b8; font-size:0.75rem;">${escapeHtml(r.timestamp)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function exportToCSV() {
+            const records = getStoredRecords();
+            if (records.length === 0) {
+                alert("Belum ada data survei untuk diekspor!");
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "ID,Nama Lengkap,Kelas,Pilihan Jadwal,Waktu Pengisian\n";
+
+            records.forEach(r => {
+                const row = [
+                    `"${(r.id || '').replace(/"/g, '""')}"`,
+                    `"${(r.name || '').replace(/"/g, '""')}"`,
+                    `"${(r.studentClass || '').replace(/"/g, '""')}"`,
+                    `"${(r.choice || '').replace(/"/g, '""')}"`,
+                    `"${(r.timestamp || '').replace(/"/g, '""')}"`
+                ];
+                csvContent += row.join(",") + "\n";
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Rekap_Survei_GESSIT_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAllData() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh data respon survei di perangkat ini?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderRecapData();
+            }
+        }
     </script>
 </body>
 </html>
