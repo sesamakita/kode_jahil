@@ -1134,24 +1134,38 @@
             if (tgRow) tgRow.style.display = 'none';
 
             // Kirim ke Vercel Serverless API /api/submit
+            // Jika dibuka langsung via file:/// gunakan endpoint Vercel publik
+            const apiEndpoint = (window.location.protocol === 'file:')
+                ? 'https://kode-jahil.vercel.app/api/submit'
+                : '/api/submit';
+
             try {
-                const response = await fetch('/api/submit', {
+                const response = await fetch(apiEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(record)
                 });
                 const result = await response.json();
-                if (result.success && !result.warning) {
-                    if (tgRow && tgBadge) {
-                        tgRow.style.display = 'flex';
+                if (tgRow && tgBadge) {
+                    tgRow.style.display = 'flex';
+                    if (result.success && !result.warning) {
                         tgBadge.textContent = '✓ Notifikasi Terkirim ke Telegram Panitia';
                         tgBadge.style.color = '#34d399';
+                    } else if (result.warning) {
+                        tgBadge.textContent = '⚠️ ' + result.warning;
+                        tgBadge.style.color = '#fbbf24';
+                    } else if (result.error) {
+                        tgBadge.textContent = '⚠️ ' + result.error;
+                        tgBadge.style.color = '#f87171';
                     }
-                } else if (result.warning) {
-                    console.info('Telegram info:', result.warning);
                 }
             } catch (err) {
-                console.warn('Pengiriman ke /api/submit dilewati:', err);
+                console.warn('Pengiriman ke /api/submit gagal:', err);
+                if (tgRow && tgBadge) {
+                    tgRow.style.display = 'flex';
+                    tgBadge.textContent = '⚠️ Gagal terhubung ke bot (Periksa koneksi internet)';
+                    tgBadge.style.color = '#f87171';
+                }
             } finally {
                 if (btnConfirm) {
                     btnConfirm.disabled = false;
