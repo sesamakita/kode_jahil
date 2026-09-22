@@ -79,6 +79,19 @@ export default async function handler(req, res) {
             });
         }
 
+        // Simpan / Tambah suara di Vercel KV jika tersedia
+        const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+        const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+        if (kvUrl && kvToken) {
+            try {
+                await fetch(`${kvUrl}/hincrby/gessit_survey_votes/${encodeURIComponent(choice)}/1`, {
+                    headers: { Authorization: `Bearer ${kvToken}` }
+                });
+            } catch (kvErr) {
+                console.warn("KV increment error:", kvErr);
+            }
+        }
+
         return res.status(200).json({
             success: true,
             message: 'Survei berhasil dicatat dan notifikasi Telegram terkirim!'

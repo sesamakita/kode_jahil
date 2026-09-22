@@ -514,15 +514,83 @@
             color: #38bdf8;
         }
 
-        .success-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        /* Grafik Rekapitulasi Suara */
+        .recap-card-chart {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius-md);
+            padding: 18px 16px;
+            margin-top: 10px;
+            text-align: left;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-wa {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.5);
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chart-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-subtitle {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .chart-total-badge {
+            background: rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            white-space: nowrap;
+        }
+
+        .chart-bars-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .chart-bar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chart-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .chart-bar-track {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-secondary {
@@ -900,23 +968,27 @@
                             <span class="ticket-label">Status Notifikasi</span>
                             <span class="ticket-val" id="telegramStatusBadge" style="color: #34d399; font-size: 0.8rem;">✓ Terkirim ke Telegram</span>
                         </div>
-                    </div>
-
-                    <div class="success-actions">
-                        <button type="button" class="btn-primary btn-wa" onclick="sendToWhatsApp()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.979-.276-.1-.476-.15-.676.15-.2.301-.776.979-.951 1.179-.176.2-.351.226-.652.075s-1.272-.469-2.424-1.496c-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.135-.135.301-.351.451-.527.151-.176.201-.301.301-.502.1-.2.05-.376-.025-.526-.075-.15-.676-1.63-.927-2.232-.244-.587-.492-.507-.676-.516l-.577-.01c-.2 0-.526.075-.802.376s-1.053 1.028-1.053 2.507c0 1.479 1.078 2.908 1.229 3.109.15.2 2.122 3.24 5.141 4.543.719.31 1.28.496 1.718.636.723.23 1.381.197 1.901.12.58-.087 1.78-.727 2.03-1.429.25-.702.25-1.304.175-1.429-.074-.125-.275-.2-.576-.35zM12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.982-1.39A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-                            </svg>
-                            <span>Kirim Bukti ke WhatsApp Panitia</span>
-                        </button>
-
-                        <button type="button" class="btn-secondary" onclick="resetSurveyForm()">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M2.5 2v6h6M21.5 22v-6h-6"></path>
-                                <path d="M22 11.5A10 10 0 0 0 3.2 7.2L2.5 8M2 12.5a10 10 0 0 0 18.8 4.3l.7.7"></path>
-                            </svg>
-                            <span>Isi Survei untuk Responden Lain</span>
-                        </button>
+                    <!-- GRAFIK REKAPITULASI SUARA (HANYA GRAFIK) -->
+                    <div class="recap-card-chart">
+                        <div class="chart-header">
+                            <div>
+                                <h3 class="chart-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </svg>
+                                    Rekapitulasi Suara Sementara
+                                </h3>
+                                <p class="chart-subtitle">Hasil akumulasi pilihan seluruh anggota</p>
+                            </div>
+                            <span class="chart-total-badge" id="chartTotalBadge">Total: 0 suara</span>
+                        </div>
+                        <div class="chart-bars-group" id="liveChartBars">
+                            <div style="text-align: center; color: #94a3b8; font-size: 0.8rem; padding: 10px;">
+                                Memuat grafik rekap suara...
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -924,10 +996,7 @@
 
         <!-- FOOTER -->
         <footer>
-            <p>&copy; 2026 Komunitas GESSIT. All rights reserved.</p>
-            <button type="button" class="admin-link" onclick="openRecapModal()">
-                &bull; Lihat Rekapitulasi Suara &bull;
-            </button>
+            <p>&copy; 2026 Komunitas GESSIT (Generasi Sulteng Sadar IT)</p>
         </footer>
     </div>
 
@@ -944,52 +1013,6 @@
             <div class="modal-btn-row">
                 <button type="button" class="btn-secondary" style="flex: 1;" onclick="closeConfirmModal()">Batal</button>
                 <button type="button" class="btn-primary" id="btnConfirmFinal" style="flex: 1.2; margin-top: 0;" onclick="finalizeSelection()">Ya, Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PANEL REKAPITULASI PANITIA -->
-    <div class="recap-section" id="recapSection">
-        <div class="recap-container">
-            <div class="recap-header">
-                <div>
-                    <h2 style="font-size: 1.2rem; font-weight: 800; color: white;">Rekapitulasi Survei GESSIT</h2>
-                    <p style="font-size: 0.8rem; color: #94a3b8;">Data respon tersimpan di browser ini</p>
-                </div>
-                <button type="button" class="btn-secondary" style="width: auto; padding: 6px 12px;" onclick="closeRecapModal()">Tutup &times;</button>
-            </div>
-
-            <!-- RINGKASAN PERSENTASE -->
-            <div id="statBoxes">
-                <!-- Dynamically populated -->
-            </div>
-
-            <div style="display: flex; gap: 10px; margin: 16px 0;">
-                <button type="button" class="btn-primary" style="margin-top: 0; font-size: 0.88rem; padding: 10px 16px;" onclick="exportToCSV()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    <span>Download CSV (Excel)</span>
-                </button>
-                <button type="button" class="btn-secondary" style="width: auto; font-size: 0.88rem; padding: 10px 16px; color: #f87171;" onclick="clearAllData()">
-                    Reset Data
-                </button>
-            </div>
-
-            <h3 style="font-size: 0.95rem; margin-top: 20px; color: #e2e8f0;">Daftar Responden Masuk (<span id="totalCount">0</span>)</h3>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Kelas</th>
-                            <th>Pilihan Jadwal</th>
-                            <th>Waktu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recapTableBody">
-                        <!-- Dynamically filled -->
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -1119,7 +1142,7 @@
                 rawDate: now.toISOString()
             };
 
-            // Simpan ke localStorage (backup offline)
+            // Simpan data lokal agar responden yang sama tidak mengisi ulang
             saveRecordToStorage(record);
 
             // Isi rincian kartu bukti
@@ -1134,7 +1157,6 @@
             if (tgRow) tgRow.style.display = 'none';
 
             // Kirim ke Vercel Serverless API /api/submit
-            // Jika dibuka langsung via file:/// gunakan endpoint Vercel publik
             const apiEndpoint = (window.location.protocol === 'file:')
                 ? 'https://kode-jahil.vercel.app/api/submit'
                 : '/api/submit';
@@ -1173,123 +1195,80 @@
                 }
                 closeConfirmModal();
                 goToStep(3);
+                renderLiveChart();
                 if (navigator.vibrate) navigator.vibrate([40, 50, 60]);
             }
         }
 
         function saveRecordToStorage(record) {
-            let records = [];
             try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                if (stored) records = JSON.parse(stored);
-            } catch (err) {
-                console.error("Gagal membaca localStorage", err);
-            }
-            records.push(record);
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+                localStorage.setItem('gessit_my_submission', JSON.stringify(record));
             } catch (err) {
                 console.error("Gagal menyimpan ke localStorage", err);
             }
         }
 
-        function getStoredRecords() {
-            try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                return stored ? JSON.parse(stored) : [];
-            } catch (err) {
-                console.error("Gagal parsing data", err);
-                return [];
-            }
-        }
+        // Ambil dan tampilkan grafik rekapitulasi suara dari server Vercel
+        async function renderLiveChart() {
+            const statsEndpoint = (window.location.protocol === 'file:')
+                ? 'https://kode-jahil.vercel.app/api/stats'
+                : '/api/stats';
 
-        function resetSurveyForm() {
-            document.getElementById('identityForm').reset();
-            currentRespondent = { name: '', studentClass: '', selectedOption: '' };
-            goToStep(1);
-        }
-
-        // WhatsApp Share
-        function sendToWhatsApp() {
-            const text = `*KONFIRMASI SURVEI KEGIATAN GESSIT*%0A%0A` +
-                         `*Nama:* ${encodeURIComponent(currentRespondent.name)}%0A` +
-                         `*Kelas:* ${encodeURIComponent(currentRespondent.studentClass)}%0A` +
-                         `*Pilihan Jadwal:* ${encodeURIComponent(currentRespondent.selectedOption)}%0A%0A` +
-                         `_Survei Kegiatan Perdana Komunitas GESSIT (Generasi Sulteng Sadar IT)_`;
-            
-            // Membuka WhatsApp (bisa diteruskan ke kontak panitia atau grup)
-            const waUrl = `https://api.whatsapp.com/send?text=${text}`;
-            window.open(waUrl, '_blank');
-        }
-
-        // Admin Rekapitulasi Modal
-        function openRecapModal() {
-            renderRecapData();
-            document.getElementById('recapSection').classList.add('active');
-        }
-
-        function closeRecapModal() {
-            document.getElementById('recapSection').classList.remove('active');
-        }
-
-        function renderRecapData() {
-            const records = getStoredRecords();
-            const total = records.length;
-            document.getElementById('totalCount').textContent = total;
-
-            // Hitung suara per opsi
-            const counts = {};
+            let counts = {};
             OPTIONS.forEach(opt => counts[opt] = 0);
+            let total = 0;
 
-            records.forEach(r => {
-                if (counts[r.choice] !== undefined) {
-                    counts[r.choice]++;
-                } else {
-                    counts[r.choice] = 1;
+            try {
+                const res = await fetch(statsEndpoint);
+                const data = await res.json();
+                if (data && data.success && data.counts) {
+                    counts = data.counts;
+                    total = data.total || 0;
                 }
-            });
+            } catch (err) {
+                console.warn("Gagal memuat statistik dari server:", err);
+            }
 
-            // Render stat boxes
-            const statBoxesContainer = document.getElementById('statBoxes');
-            statBoxesContainer.innerHTML = '';
+            // Jika total masih 0, minimal tampilkan pilihan responden saat ini
+            if (total === 0 && currentRespondent.selectedOption) {
+                counts[currentRespondent.selectedOption] = 1;
+                total = 1;
+            }
+
+            const badge = document.getElementById('chartTotalBadge');
+            if (badge) badge.textContent = `Total: ${total} suara`;
+
+            const container = document.getElementById('liveChartBars');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const gradients = [
+                'linear-gradient(90deg, #3b82f6, #06b6d4)',
+                'linear-gradient(90deg, #8b5cf6, #ec4899)',
+                'linear-gradient(90deg, #10b981, #14b8a6)'
+            ];
 
             OPTIONS.forEach((opt, idx) => {
                 const count = counts[opt] || 0;
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                const isSelected = (opt === currentRespondent.selectedOption);
 
-                const box = document.createElement('div');
-                box.className = 'stat-card';
-                box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700;">
-                        <span style="color:#f1f5f9;">${opt}</span>
-                        <span style="color:#38bdf8;">${count} suara (${pct}%)</span>
+                const barItem = document.createElement('div');
+                barItem.className = 'chart-bar-item';
+                barItem.innerHTML = `
+                    <div class="chart-bar-labels">
+                        <span style="color:${isSelected ? '#38bdf8' : '#e2e8f0'}; font-weight:${isSelected ? '700' : '600'};">
+                            ${escapeHtml(opt)} ${isSelected ? '<span style="color:#34d399; font-size:0.72rem; font-weight:700;">(Pilihan Anda)</span>' : ''}
+                        </span>
+                        <span style="color:#94a3b8; font-size:0.8rem;">
+                            <b style="color:${isSelected ? '#38bdf8' : '#f1f5f9'};">${count} suara</b> (${pct}%)
+                        </span>
                     </div>
-                    <div class="stat-bar-bg">
-                        <div class="stat-bar-fill" style="width: ${pct}%;"></div>
+                    <div class="chart-bar-track">
+                        <div class="chart-bar-fill" style="width: ${pct}%; background: ${gradients[idx % gradients.length]};"></div>
                     </div>
                 `;
-                statBoxesContainer.appendChild(box);
-            });
-
-            // Render tabel responden
-            const tbody = document.getElementById('recapTableBody');
-            tbody.innerHTML = '';
-
-            if (records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px;">Belum ada responden yang mengisi survei di perangkat ini.</td></tr>';
-                return;
-            }
-
-            records.slice().reverse().forEach((r, i) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td style="font-weight:600; color:white;">${escapeHtml(r.name)}</td>
-                    <td>${escapeHtml(r.studentClass)}</td>
-                    <td style="color:#60a5fa;">${escapeHtml(r.choice)}</td>
-                    <td style="color:#94a3b8; font-size:0.75rem;">${escapeHtml(r.timestamp)}</td>
-                `;
-                tbody.appendChild(tr);
+                container.appendChild(barItem);
             });
         }
 
@@ -1303,43 +1282,26 @@
                 .replace(/'/g, "&#039;");
         }
 
-        function exportToCSV() {
-            const records = getStoredRecords();
-            if (records.length === 0) {
-                alert("Belum ada data survei untuk diekspor!");
-                return;
+        // Jika responden sudah pernah mengisi di browser ini, langsung tampilkan buktinya
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const stored = localStorage.getItem('gessit_my_submission');
+                if (stored) {
+                    const data = JSON.parse(stored);
+                    if (data && data.name && data.choice) {
+                        currentRespondent = data;
+                        document.getElementById('receiptName').textContent = data.name;
+                        document.getElementById('receiptClass').textContent = data.studentClass;
+                        document.getElementById('receiptChoice').textContent = data.choice;
+                        document.getElementById('receiptTime').textContent = data.timestamp;
+                        goToStep(3);
+                        renderLiveChart();
+                    }
+                }
+            } catch (e) {
+                console.warn(e);
             }
-
-            let csvContent = "\uFEFF"; // UTF-8 BOM
-            csvContent += "ID,Nama Lengkap,Kelas,Pilihan Jadwal,Waktu Pengisian\n";
-
-            records.forEach(r => {
-                const row = [
-                    `"${(r.id || '').replace(/"/g, '""')}"`,
-                    `"${(r.name || '').replace(/"/g, '""')}"`,
-                    `"${(r.studentClass || '').replace(/"/g, '""')}"`,
-                    `"${(r.choice || '').replace(/"/g, '""')}"`,
-                    `"${(r.timestamp || '').replace(/"/g, '""')}"`
-                ];
-                csvContent += row.join(",") + "\n";
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", `Rekap_Survei_GESSIT_${Date.now()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function clearAllData() {
-            if (confirm("Apakah Anda yakin ingin menghapus seluruh data respon survei di perangkat ini?")) {
-                localStorage.removeItem(STORAGE_KEY);
-                renderRecapData();
-            }
-        }
+        });
     </script>
 </body>
 </html>

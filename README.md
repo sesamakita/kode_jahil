@@ -2,7 +2,7 @@
 
 Portal survei web interaktif, responsif (*mobile-first*), dan terhubung langsung ke **Notifikasi Bot Telegram** untuk penjadwalan kegiatan perdana **Komunitas GESSIT (Generasi Sulteng Sadar IT)**.
 
-Hosting dapat menggunakan **Vercel** gratis yang terhubung otomatis dengan repositori GitHub ini.
+Hosting menggunakan **Vercel** gratis yang terhubung otomatis dengan repositori GitHub ini.
 
 ---
 
@@ -19,57 +19,34 @@ Pilihan jawaban disediakan dalam bentuk 3 tombol interaktif *touch-friendly*:
 
 ## ✨ Fitur Utama
 
-- **Tahap Identitas Responden**: Form input untuk **Nama Lengkap** dan **Kelas / Instansi** dengan validasi form sebelum masuk ke pertanyaan.
-- **Desain Mobile-First & Responsif**: Tampilan modern (*glassmorphism*, dark mode bernuansa IT, font Plus Jakarta Sans) yang nyaman dan ringan dibuka di smartphone/browser apa pun.
-- **Serverless API Vercel (`api/submit.js`)**: Menerima data submit dan mengirimkannya ke Bot Telegram secara aman tanpa mengekspos token bot ke publik.
-- **Notifikasi Bot Telegram Otomatis**: Setiap ada responden yang mengisi survei, notifikasi berformat rapi langsung masuk ke akun atau grup Telegram panitia.
-- **Kartu Bukti Partisipasi**: Layar ucapan terima kasih lengkap dengan ringkasan nama, kelas, opsi yang dipilih, waktu submit, dan status pengiriman Telegram.
-- **Integrasi WhatsApp**: Tombol instan untuk mengirimkan bukti pilihan via WhatsApp.
-- **Penyimpanan Lokal (Offline Backup)**: Tersimpan di `localStorage` browser sehingga rekap data tetap bisa dilihat dan diekspor ke `.csv` (Excel).
+- **Tahap Identitas Responden**: Form input untuk **Nama Lengkap** dan **Kelas / Instansi** dengan validasi agar tidak ada data yang kosong.
+- **Desain Mobile-First & Responsif**: Tampilan modern (*glassmorphism*, tema gelap bernuansa IT, font Plus Jakarta Sans) yang nyaman dibuka di smartphone siswa/anggota.
+- **Serverless API Vercel (`api/submit.js` & `api/stats.js`)**: 
+  - Menerima suara responden dan mengirimkan notifikasi ke Telegram secara aman tanpa mengekspos token bot.
+  - Menyediakan endpoint agregasi data statistik perolehan suara.
+- **Grafik Rekapitulasi Suara (Live)**: 
+  - Ditampilkan langsung setelah responden menyelesaikan survei.
+  - **Hanya menampilkan grafik dan persentase suara** demi menjaga privasi nama/kelas peserta.
+- **Aman dari Reset Pengguna**:
+  - Tombol reset publik dan daftar nama responden telah dihapus agar survei yang dibagikan secara luas ke seluruh anggota tidak bisa dimanipulasi/dihapus oleh peserta.
+  - Responden yang sudah memilih akan tersimpan statusnya sehingga tidak dapat mengisi berulang kali di browser yang sama.
+- **Notifikasi Bot Telegram Otomatis**: Setiap suara yang masuk langsung dikirim ke chat Telegram panitia secara *real-time*.
 
 ---
 
-## 🤖 Panduan Menghubungkan Bot Telegram di Vercel
+## 💾 Penyimpanan Data Global di Vercel (Vercel KV)
 
-### Langkah 1: Buat Bot Telegram & Dapatkan Token
-1. Buka aplikasi Telegram, cari bot bernama **[@BotFather](https://t.me/Botfather)**.
-2. Kirim perintah `/newbot`.
-3. Masukkan nama bot (misal: `GESSIT Survey Bot`) dan username bot (misal: `gessit_survey_bot`).
-4. BotFather akan memberikan **HTTP API Token**, contohnya:
-   ```text
-   7123456789:AAHk1234567890abcdefghijklmnopqrstuv
-   ```
-
-### Langkah 2: Dapatkan Chat ID (Tujuan Notifikasi)
-Notifikasi bisa dikirim ke **chat pribadi Anda** atau ke **grup panitia GESSIT**:
-- **Jika ke Chat Pribadi**:
-  1. Buka bot yang baru Anda buat, lalu tekan **Start** (`/start`).
-  2. Buka bot **[@userinfobot](https://t.me/userinfobot)** lalu tekan Start. Bot tersebut akan memberikan `Id` Anda (contoh: `123456789`).
-- **Jika ke Grup Telegram**:
-  1. Buat grup di Telegram atau buka grup panitia yang sudah ada.
-  2. Masukkan bot Anda ke dalam grup tersebut.
-  3. Masukkan juga bot **[@RawDataBot](https://t.me/RawDataBot)** ke grup untuk melihat ID grup (biasanya diawali tanda minus, contoh: `-1001987654321`), lalu keluarkan kembali `@RawDataBot`.
-
-### Langkah 3: Pasang di Vercel
+Agar perolehan suara dari **seluruh anggota di berbagai perangkat** terkumpul dan terakumulasi secara terpusat pada grafik live:
 1. Buka dashboard proyek Anda di **[vercel.com](https://vercel.com)**.
-2. Masuk ke tab **Settings** ➡️ **Environment Variables**.
-3. Tambahkan 2 variabel berikut:
-   - **Nama:** `TELEGRAM_BOT_TOKEN`  
-     **Nilai:** `(Token bot dari BotFather)`
-   - **Nama:** `TELEGRAM_CHAT_ID`  
-     **Nilai:** `(Chat ID pribadi atau ID grup)`
-4. Klik **Save**.
-5. Jika proyek sudah terdeploy, lakukan **Redeploy** di menu *Deployments* (atau cukup lakukan push git baru) agar variabel lingkungan aktif.
+2. Klik tab **Storage** di menu navigasi atas.
+3. Klik tombol **Create Database** ➡️ pilih **KV** (Redis).
+4. Klik **Continue** ➡️ pilih **Connect to Project** (pilih repositori ini).
+5. Vercel akan otomatis menyambungkan database KV ke proyek Anda tanpa perlu copy-paste token manual!
 
 ---
 
-## 🚀 Struktur Proyek
+## 🤖 Konfigurasi Bot Telegram
 
-```text
-├── .env.example       # Contoh referensi variabel lingkungan Vercel
-├── .gitignore         # Mencegah file rahasia lokal ter-commit
-├── README.md          # Dokumentasi proyek & panduan setup
-├── index.html         # Frontend portal survei interaktif & responsif
-└── api/
-    └── submit.js      # Vercel Serverless Function pengirim notifikasi Telegram
-```
+Variabel lingkungan yang wajib ada di **Vercel Settings ➡️ Environment Variables**:
+- `TELEGRAM_BOT_TOKEN`: Token bot dari `@BotFather`
+- `TELEGRAM_CHAT_ID`: Chat ID Telegram panitia
