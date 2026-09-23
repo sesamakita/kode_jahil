@@ -1220,7 +1220,7 @@
 
             // Kirim ke Vercel Serverless API /api/submit
             const apiEndpoint = (window.location.protocol === 'file:')
-                ? 'https://kode-jahil.vercel.app/api/submit'
+                ? 'https://survey-gessit.vercel.app/api/submit'
                 : '/api/submit';
 
             try {
@@ -1273,7 +1273,7 @@
         // Ambil dan tampilkan grafik rekapitulasi suara dari server Vercel
         async function renderLiveChart() {
             const statsEndpoint = (window.location.protocol === 'file:')
-                ? 'https://kode-jahil.vercel.app/api/stats'
+                ? 'https://survey-gessit.vercel.app/api/stats'
                 : '/api/stats';
 
             let counts = {};
@@ -1386,7 +1386,7 @@
 
             try {
                 const apiEndpoint = (window.location.protocol === 'file:')
-                    ? 'https://kode-jahil.vercel.app/api/admin?pin=' + encodeURIComponent(pin)
+                    ? 'https://survey-gessit.vercel.app/api/admin?pin=' + encodeURIComponent(pin)
                     : '/api/admin?pin=' + encodeURIComponent(pin);
 
                 const res = await fetch(apiEndpoint);
@@ -1470,7 +1470,7 @@
         async function refreshAdminData() {
             if (!activeAdminPin) return;
             const apiEndpoint = (window.location.protocol === 'file:')
-                ? 'https://kode-jahil.vercel.app/api/admin?pin=' + encodeURIComponent(activeAdminPin)
+                ? 'https://survey-gessit.vercel.app/api/admin?pin=' + encodeURIComponent(activeAdminPin)
                 : '/api/admin?pin=' + encodeURIComponent(activeAdminPin);
 
             try {

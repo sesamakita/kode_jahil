@@ -1,0 +1,24 @@
+{
+  "name": "kode_jahil",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Portal survei web interaktif, responsif (*mobile-first*), dan terhubung langsung ke **Notifikasi Bot Telegram** untuk penjadwalan kegiatan perdana **Komunitas GESSIT (Generasi Sulteng Sadar IT)**.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sesamakita/kode_jahil.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sesamakita/kode_jahil/issues"
+  },
+  "homepage": "https://github.com/sesamakita/kode_jahil#readme",
+  "dependencies": {
+    "ioredis": "^6.0.0"
+  }
+}
