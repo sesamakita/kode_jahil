@@ -791,7 +791,7 @@
     <div class="container">
         <!-- HEADER -->
         <header class="brand-header">
-            <div class="brand-badge">
+            <div class="brand-badge" onclick="handleBadgeClick()" style="cursor: pointer;" title="Klik untuk akses panitia">
                 <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                 KOMUNITAS GESSIT
             </div>
@@ -1013,6 +1013,68 @@
             <div class="modal-btn-row">
                 <button type="button" class="btn-secondary" style="flex: 1;" onclick="closeConfirmModal()">Batal</button>
                 <button type="button" class="btn-primary" id="btnConfirmFinal" style="flex: 1.2; margin-top: 0;" onclick="finalizeSelection()">Ya, Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PIN ADMIN KHUSUS PANITIA -->
+    <div class="modal-overlay" id="adminPinModal">
+        <div class="modal-content">
+            <h3 style="font-size: 1.15rem; margin-bottom: 8px;">🔒 Panel Panitia GESSIT</h3>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 16px;">
+                Masukkan PIN Panitia untuk melihat rekapitulasi data lengkap:
+            </p>
+            <input type="password" id="adminPinInput" class="input-field" placeholder="Masukkan PIN..." style="text-align: center; font-size: 1.1rem; letter-spacing: 0.15em; padding: 12px; margin-bottom: 10px;">
+            <div id="adminPinError" style="color: #f87171; font-size: 0.8rem; margin-bottom: 12px; display: none;">PIN salah, silakan coba lagi.</div>
+            <div class="modal-btn-row">
+                <button type="button" class="btn-secondary" style="flex: 1;" onclick="closeAdminPinModal()">Batal</button>
+                <button type="button" class="btn-primary" style="flex: 1.2; margin-top: 0;" onclick="submitAdminPin()">Buka Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL REKAPITULASI RESMI PANITIA -->
+    <div id="adminPanelModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 13, 22, 0.98); z-index: 3000; overflow-y: auto; padding: 20px 16px;">
+        <div style="max-width: 680px; margin: 0 auto; background: #111827; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 24px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 14px; margin-bottom: 18px;">
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: white;">👑 Panel Rekapitulasi Panitia</h2>
+                    <p style="font-size: 0.8rem; color: #94a3b8;">Data resmi tersimpan di server Vercel & Redis</p>
+                </div>
+                <button type="button" class="btn-secondary" style="width: auto; padding: 6px 14px;" onclick="closeAdminPanel()">Tutup &times;</button>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button type="button" class="btn-primary" style="margin-top: 0; font-size: 0.88rem; padding: 10px 18px; width: auto;" onclick="downloadAdminCSV()">
+                    📥 Download Data Excel (CSV)
+                </button>
+                <button type="button" class="btn-secondary" style="width: auto; font-size: 0.88rem; padding: 10px 14px;" onclick="refreshAdminData()">
+                    🔄 Segarkan Data
+                </button>
+            </div>
+
+            <!-- GRAFIK STATS -->
+            <div id="adminChartArea" style="margin-bottom: 24px;"></div>
+
+            <!-- TABEL DAFTAR NAMA RESPONDEN -->
+            <h3 style="font-size: 1rem; color: #f1f5f9; margin-bottom: 10px;">
+                Daftar Seluruh Responden (<span id="adminTotalCount">0</span>)
+            </h3>
+            <div style="overflow-x: auto; max-height: 420px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                    <thead>
+                        <tr style="background: rgba(30, 41, 59, 0.95); position: sticky; top: 0;">
+                            <th style="padding: 10px 12px; color: #94a3b8;">No</th>
+                            <th style="padding: 10px 12px; color: #94a3b8;">Nama Lengkap</th>
+                            <th style="padding: 10px 12px; color: #94a3b8;">Kelas</th>
+                            <th style="padding: 10px 12px; color: #94a3b8;">Pilihan</th>
+                            <th style="padding: 10px 12px; color: #94a3b8;">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -1282,8 +1344,183 @@
                 .replace(/'/g, "&#039;");
         }
 
+        // ============================================
+        // FITUR KHUSUS PANITIA / ADMIN (DILINDUNGI PIN)
+        // ============================================
+        let badgeClickCount = 0;
+        let badgeClickTimer = null;
+        let activeAdminPin = '';
+        let adminCachedRespondents = [];
+
+        function handleBadgeClick() {
+            badgeClickCount++;
+            clearTimeout(badgeClickTimer);
+            badgeClickTimer = setTimeout(() => { badgeClickCount = 0; }, 2000);
+
+            // Jika diklik 3x dalam 2 detik, buka popup PIN
+            if (badgeClickCount >= 3) {
+                badgeClickCount = 0;
+                openAdminPinModal();
+            }
+        }
+
+        function openAdminPinModal() {
+            document.getElementById('adminPinInput').value = '';
+            document.getElementById('adminPinError').style.display = 'none';
+            document.getElementById('adminPinModal').classList.add('active');
+            setTimeout(() => document.getElementById('adminPinInput').focus(), 150);
+        }
+
+        function closeAdminPinModal() {
+            document.getElementById('adminPinModal').classList.remove('active');
+        }
+
+        async function submitAdminPin() {
+            const pin = document.getElementById('adminPinInput').value.trim();
+            const errEl = document.getElementById('adminPinError');
+            if (!pin) {
+                errEl.textContent = 'Harap masukkan PIN.';
+                errEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const apiEndpoint = (window.location.protocol === 'file:')
+                    ? 'https://kode-jahil.vercel.app/api/admin?pin=' + encodeURIComponent(pin)
+                    : '/api/admin?pin=' + encodeURIComponent(pin);
+
+                const res = await fetch(apiEndpoint);
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    errEl.textContent = data.error || 'PIN salah, akses ditolak.';
+                    errEl.style.display = 'block';
+                    return;
+                }
+
+                // Sukses
+                activeAdminPin = pin;
+                closeAdminPinModal();
+                openAdminPanelWithData(data);
+            } catch (e) {
+                errEl.textContent = 'Gagal menghubungi server admin.';
+                errEl.style.display = 'block';
+            }
+        }
+
+        function openAdminPanelWithData(data) {
+            document.getElementById('adminPanelModal').style.display = 'block';
+            document.getElementById('adminTotalCount').textContent = data.total || 0;
+            adminCachedRespondents = data.respondents || [];
+
+            // Render grafik di panel admin
+            const chartArea = document.getElementById('adminChartArea');
+            chartArea.innerHTML = '';
+            const gradients = [
+                'linear-gradient(90deg, #3b82f6, #06b6d4)',
+                'linear-gradient(90deg, #8b5cf6, #ec4899)',
+                'linear-gradient(90deg, #10b981, #14b8a6)'
+            ];
+
+            OPTIONS.forEach((opt, idx) => {
+                const count = (data.counts && data.counts[opt]) || 0;
+                const pct = data.total > 0 ? Math.round((count / data.total) * 100) : 0;
+
+                const barItem = document.createElement('div');
+                barItem.style.marginBottom = '12px';
+                barItem.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:5px;">
+                        <span style="color:#f1f5f9;">${escapeHtml(opt)}</span>
+                        <span style="color:#38bdf8;">${count} suara (${pct}%)</span>
+                    </div>
+                    <div style="height:10px; background:rgba(255,255,255,0.08); border-radius:9999px; overflow:hidden;">
+                        <div style="height:100%; width:${pct}%; background:${gradients[idx % gradients.length]}; border-radius:9999px; transition:width 0.6s;"></div>
+                    </div>
+                `;
+                chartArea.appendChild(barItem);
+            });
+
+            // Render tabel responden
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = '';
+
+            if (adminCachedRespondents.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:24px;">Belum ada responden yang tercatat di server.</td></tr>';
+                return;
+            }
+
+            adminCachedRespondents.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+                tr.innerHTML = `
+                    <td style="padding:10px 12px; color:#94a3b8;">${index + 1}</td>
+                    <td style="padding:10px 12px; font-weight:600; color:white;">${escapeHtml(item.name || '-')}</td>
+                    <td style="padding:10px 12px; color:#cbd5e1;">${escapeHtml(item.studentClass || '-')}</td>
+                    <td style="padding:10px 12px; color:#60a5fa;">${escapeHtml(item.choice || '-')}</td>
+                    <td style="padding:10px 12px; color:#94a3b8; font-size:0.75rem;">${escapeHtml(item.timestamp || '-')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        async function refreshAdminData() {
+            if (!activeAdminPin) return;
+            const apiEndpoint = (window.location.protocol === 'file:')
+                ? 'https://kode-jahil.vercel.app/api/admin?pin=' + encodeURIComponent(activeAdminPin)
+                : '/api/admin?pin=' + encodeURIComponent(activeAdminPin);
+
+            try {
+                const res = await fetch(apiEndpoint);
+                const data = await res.json();
+                if (data.success) openAdminPanelWithData(data);
+            } catch (e) {
+                alert('Gagal menyegarkan data.');
+            }
+        }
+
+        function downloadAdminCSV() {
+            if (!adminCachedRespondents || adminCachedRespondents.length === 0) {
+                alert('Belum ada data responden untuk diunduh!');
+                return;
+            }
+
+            let csv = "\uFEFF"; // UTF-8 BOM
+            csv += "No,ID,Nama Lengkap,Kelas,Pilihan Jadwal,Waktu Pengisian\n";
+
+            adminCachedRespondents.forEach((r, idx) => {
+                const row = [
+                    idx + 1,
+                    `"${(r.id || '').replace(/"/g, '""')}"`,
+                    `"${(r.name || '').replace(/"/g, '""')}"`,
+                    `"${(r.studentClass || '').replace(/"/g, '""')}"`,
+                    `"${(r.choice || '').replace(/"/g, '""')}"`,
+                    `"${(r.timestamp || '').replace(/"/g, '""')}"`
+                ];
+                csv += row.join(",") + "\n";
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `Rekap_Survei_GESSIT_${Date.now()}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         // Jika responden sudah pernah mengisi di browser ini, langsung tampilkan buktinya
         window.addEventListener('DOMContentLoaded', () => {
+            // Cek parameter ?admin di URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('admin') || urlParams.has('rekap')) {
+                setTimeout(openAdminPinModal, 300);
+            }
+
             try {
                 const stored = localStorage.getItem('gessit_my_submission');
                 if (stored) {
