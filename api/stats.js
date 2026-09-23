@@ -15,11 +15,19 @@ export default async function handler(req, res) {
 
     try {
         const stats = await getGlobalStats();
+        const availableEnvKeys = Object.keys(process.env).filter(k => 
+            k.includes('KV') || k.includes('REDIS') || k.includes('UPSTASH') || k.includes('TELEGRAM')
+        );
+
         return res.status(200).json({
             success: true,
             total: stats.total,
             counts: stats.counts,
-            source: stats.source
+            source: stats.source,
+            diagnosis: {
+                has_kv: !!(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
+                detected_keys: availableEnvKeys
+            }
         });
     } catch (err) {
         console.error("Error getting stats:", err);
