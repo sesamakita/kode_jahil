@@ -23,9 +23,9 @@ export default async function handler(req, res) {
             success: false,
             error: err.message,
             counts: {
-                'Sabtu 26/9/2026, Jam 12.30 - 14.30': 0,
-                'Minggu 27/9/2026 Jam 12.30 - 14.30': 0,
-                'Terserah, Sabtu atau Minggu saya bisa': 0
+                'Sabtu 26/9/2026, Jam 12.30 - 14.30, Smansa Balut': 0,
+                'Minggu 27/9/2026 Jam 12.30 - 14.30, Smansa Balut': 0,
+                'Terserah, Sabtu atau Minggu saya bisa, Smansa Balut': 0
             },
             total: 0
         });

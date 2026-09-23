@@ -11,9 +11,9 @@ Hosting menggunakan **Vercel** gratis yang terhubung otomatis dengan repositori 
 > **"Pilihlah Jawaban berikut ini, jika anda bersedia mengikuti kegiatan Perdana Komunitas GESSIT (Generasi Sulteng Sadar IT)"**
 
 Pilihan jawaban disediakan dalam bentuk 3 tombol interaktif *touch-friendly*:
-1. **`Sabtu 26/9/2026, Jam 12.30 - 14.30`**
-2. **`Minggu 27/9/2026 Jam 12.30 - 14.30`**
-3. **`Terserah, Sabtu atau Minggu saya bisa`**
+1. **`Sabtu 26/9/2026, Jam 12.30 - 14.30, Smansa Balut`**
+2. **`Minggu 27/9/2026 Jam 12.30 - 14.30, Smansa Balut`**
+3. **`Terserah, Sabtu atau Minggu saya bisa, Smansa Balut`**
 
 ---
 
