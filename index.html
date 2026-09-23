@@ -990,6 +990,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- TOMBOL ISI ULANG / BIODATA BARU -->
+                    <div style="margin-top: 16px; text-align: center;">
+                        <button type="button" class="btn-secondary" style="font-size: 0.88rem; padding: 10px 18px;" onclick="allowNewSurvey()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="margin-right: 6px;"><path d="M2.5 2v6h6M21.5 22v-6h-6"></path><path d="M22 11.5A10 10 0 0 0 3.2 7.2L2.5 8M2 12.5a10 10 0 0 0 18.8 4.3l.7.7"></path></svg>
+                            <span>↻ Isi Survei Baru / Ganti Biodata</span>
+                        </button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -1050,6 +1058,9 @@
                 </button>
                 <button type="button" class="btn-secondary" style="width: auto; font-size: 0.88rem; padding: 10px 14px;" onclick="refreshAdminData()">
                     🔄 Segarkan Data
+                </button>
+                <button type="button" class="btn-secondary" style="width: auto; font-size: 0.88rem; padding: 10px 14px; color: #f87171; border-color: rgba(248, 113, 113, 0.4);" onclick="resetServerData()">
+                    🗑️ Hapus Semua Data Server
                 </button>
             </div>
 
@@ -1513,10 +1524,50 @@
             document.body.removeChild(link);
         }
 
+        // Hapus data server dari Panel Panitia
+        async function resetServerData() {
+            if (!activeAdminPin) return;
+            if (!confirm("⚠️ PERINGATAN PANITIA:\nApakah Anda yakin ingin MENGHAPUS SEMUA data suara dan daftar responden di server Redis?\n\nData yang telah dihapus tidak bisa dikembalikan!")) {
+                return;
+            }
+
+            const apiEndpoint = (window.location.protocol === 'file:')
+                ? 'https://survey-gessit.vercel.app/api/admin?pin=' + encodeURIComponent(activeAdminPin) + '&action=reset'
+                : '/api/admin?pin=' + encodeURIComponent(activeAdminPin) + '&action=reset';
+
+            try {
+                const res = await fetch(apiEndpoint);
+                const data = await res.json();
+                if (data.success) {
+                    alert("✅ Berhasil! Seluruh data di server Redis telah dibersihkan.");
+                    localStorage.removeItem('gessit_my_submission');
+                    refreshAdminData();
+                } else {
+                    alert("Gagal mereset: " + (data.error || 'Terjadi kesalahan'));
+                }
+            } catch (e) {
+                alert("Gagal menghubungi server.");
+            }
+        }
+
+        // Mengizinkan responden/admin mengisi ulang biodata survei baru
+        function allowNewSurvey() {
+            localStorage.removeItem('gessit_my_submission');
+            document.getElementById('identityForm').reset();
+            currentRespondent = { name: '', studentClass: '', selectedOption: '' };
+            goToStep(1);
+        }
+
         // Jika responden sudah pernah mengisi di browser ini, langsung tampilkan buktinya
         window.addEventListener('DOMContentLoaded', () => {
-            // Cek parameter ?admin di URL
             const urlParams = new URLSearchParams(window.location.search);
+
+            // Jika ada parameter ?reset atau ?new, bersihkan sesi browser
+            if (urlParams.has('reset') || urlParams.has('new')) {
+                localStorage.removeItem('gessit_my_submission');
+            }
+
+            // Cek parameter ?admin di URL
             if (urlParams.has('admin') || urlParams.has('rekap')) {
                 setTimeout(openAdminPinModal, 300);
             }
