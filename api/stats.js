@@ -45,10 +45,13 @@ export async function getGlobalStats() {
 
     if (kvUrl && kvToken) {
         try {
-            const response = await fetch(`${kvUrl}/hgetall/gessit_survey_votes`, {
+            const response = await fetch(kvUrl, {
+                method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${kvToken}`
-                }
+                    Authorization: `Bearer ${kvToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(["HGETALL", "gessit_survey_votes"])
             });
             const data = await response.json();
             if (data && data.result) {

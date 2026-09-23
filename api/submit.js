@@ -79,16 +79,40 @@ export default async function handler(req, res) {
             });
         }
 
-        // Simpan / Tambah suara di Vercel KV jika tersedia
+        // Simpan data responden dan suara ke Redis (Vercel KV / Upstash) jika terhubung
         const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
         const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
         if (kvUrl && kvToken) {
             try {
-                await fetch(`${kvUrl}/hincrby/gessit_survey_votes/${encodeURIComponent(choice)}/1`, {
-                    headers: { Authorization: `Bearer ${kvToken}` }
+                // 1. Simpan detail responden ke List 'gessit_survey_respondents'
+                const respondentItem = JSON.stringify({
+                    id: id || ('GES-' + Date.now().toString(36).toUpperCase()),
+                    name,
+                    studentClass,
+                    choice,
+                    timestamp: timestamp || new Date().toLocaleString('id-ID')
+                });
+
+                await fetch(kvUrl, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${kvToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(["LPUSH", "gessit_survey_respondents", respondentItem])
+                });
+
+                // 2. Tambahkan hitungan suara ke Hash 'gessit_survey_votes' untuk acuan grafik
+                await fetch(kvUrl, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${kvToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(["HINCRBY", "gessit_survey_votes", choice, 1])
                 });
             } catch (kvErr) {
-                console.warn("KV increment error:", kvErr);
+                console.warn("Gagal menyimpan ke Redis KV:", kvErr);
             }
         }
 
