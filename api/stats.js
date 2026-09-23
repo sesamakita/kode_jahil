@@ -26,7 +26,11 @@ export default async function handler(req, res) {
             source: stats.source,
             diagnosis: {
                 has_kv: !!(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
-                detected_keys: availableEnvKeys
+                detected_keys: availableEnvKeys,
+                redis_info: process.env.REDIS_URL ? {
+                    protocol: (new URL(process.env.REDIS_URL)).protocol,
+                    host: (new URL(process.env.REDIS_URL)).hostname
+                } : null
             }
         });
     } catch (err) {
